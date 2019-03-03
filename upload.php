@@ -25,8 +25,8 @@ if($_GET['file_name']!=''){
   }
 }else{
   // 用于签名的公钥和私钥
-  $accessKey = $data[0]['qiniu_AK']; #公'WMOuej-P_84LO4bKrsuNSstudJ0BOMBOCbAFLtmz'
-  $secretKey = $data[0]['qiniu_SK']; #私'hfAtmg3TPm4cf1qJfql8Qa7f_1u3dB78HsSjmpgM';
+  $accessKey = $data[0]['qiniu_AK']; 
+  $secretKey = $data[0]['qiniu_SK']; 
   //空间名
   $bucket = $data[0]['qiniu_name'];
   // 初始化签权对象
