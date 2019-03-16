@@ -86,7 +86,7 @@ islogin();
 					  			<form class="am-form am-form-horizontal">
 									 <div class="am-form-group">
 									    <div class="am-u-sm-10">
-									      <b>七牛云域名<span style="font-weight: 100"></span></b><input type="text" id="qiniu_url" placeholder="七牛云域名" value="<?php echo $data[0]['qiniu_url']?>">
+									      <b>七牛云域名<span style="font-weight: 100"></span></b><input type="text" id="qiniu_url" placeholder="七牛云域名 以http或https开头，勿要“/”结尾" value="<?php echo $data[0]['qiniu_url']?>">
 									    </div>
 									 </div>
 									 <div class="am-form-group">
@@ -288,6 +288,15 @@ islogin();
 			if (site_name==''||site_url==''||qiniu_ak=='') {
 				alert("请至少保证必填项完整");
 			}else{
+				//2019-3-16  新增 规范用户对七牛云url的规范填写
+				if (qiniu_url.indexOf('http://')==-1&&qiniu_url.indexOf('https://')==-1) {
+					mizhu.toast('七牛云域名请使用http://或https://', 3000);
+					return false;
+				}else if(qiniu_url.charAt(qiniu_url.length-1)=="/"){
+					mizhu.toast('七牛云域名请不要以‘/’结尾', 3000);
+					return false;
+				}
+
 				$.ajax({
 		           type: "POST",
 		           url: "sharefun.php",
@@ -296,7 +305,7 @@ islogin();
 		            	if (data=='修改成功') {
 		            		window.location.reload();
 		            	}else{
-		            		alert("修改失败");
+		            		mizhu.toast('修改失败', 3000);
 		            	}
 		            }
 		        });
@@ -326,7 +335,7 @@ islogin();
 		            		alert('修改分享状态成功')
 		            		window.location.reload();
 		            	}else{
-		            		alert("修改失败");
+		            		mizhu.toast('修改失败', 3000);
 		            	}
 		            }
 		    });
