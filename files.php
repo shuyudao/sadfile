@@ -24,6 +24,17 @@ islogin(); #判断是否登录
 	<link rel="stylesheet" type="text/css" href="static/css/viewer.min.css">
 	<script type="text/javascript" src="static/js/viewer.min.js"></script>
 	<script type="text/javascript" src="static/alert/js/ui.js"></script>
+	<style type="text/css">
+		#creat_dir{
+			display: inline-block;
+			height: 27px;
+			font-size: 10px;
+		}
+		#search input{
+			width: 0px;
+			border:none;
+		}
+	</style>
 </head>
 
 <body>
@@ -72,6 +83,7 @@ islogin(); #判断是否登录
 								  });
 								</script>
 							</div>
+
 					  	</div>
 					  	<!-- 基本管理 -->
 					  	<div id="ctrl" style="position:relative;z-index:10;">
@@ -79,14 +91,16 @@ islogin(); #判断是否登录
 					  			<ul class="am-list am-list-static am-list-border">
 						  			<li>
 						  				<div  id="search" class="am-form-group">
-									      <!-- <input type="search_key" class="" id="doc-ipt-email-1" placeholder=" 输入搜索文件名"> -->
-									      <!-- <button id="search_button" type="button" class="am-btn am-btn-danger"><i class="am-icon-search am-icon-fw"></i>搜索</button> -->
-									      <form style="display: inline-block;" action="files.php" method="GET">
+									      
+									      <form style="display: inline-block;" action="#" method="GET">
 										      <input type="search_key" name="mkdir_name" id="dir_name" placeholder="输入创建目录名">
-										      <button id="search_button" class="am-btn am-btn-danger">创建目录</button>
+										      <button id="creat_dir" isopen="0" class="am-btn am-btn-danger">创建目录</button>
+										      <input id="file_name" type="search_key" class="" id="doc-ipt-email-1" placeholder=" 输入搜索文件名">
+									      	<button id="search_button" isopen="0" type="button" class="am-btn am-btn-danger"><i class="am-icon-search am-icon-fw"></i>搜索</button>
 									      </form>
 									    </div>
 						  			</li>
+
 								</ul>
 					  		</div>
 					  	</div>
@@ -583,7 +597,7 @@ function shareFun(){
 						var key_temp = getCookie('nav_path_key')+'^^'+key;
 						setCookie('nav_path',innername);
 						setCookie('nav_path_key',key_temp);
-						mizhu.toast('加载中...', 5000);
+						mizhu.toast('加载中...', 50000);
 						getmulu_ajax(key); //打开目录需要获取新的文件列表
 						setCookie('dir_key',key);
 					}
@@ -799,14 +813,28 @@ var rename_files = $('.rename');
 		}
 	}
 
+		//2019-3-16 文件创建样式修改
 
-	 //创建目录检测 {检测当前目录下是否含有同名目录，如果存在，不给予创建}
-	 document.getElementById('search_button').onclick = function(){
+	 
+	 document.getElementById('creat_dir').onclick = function(){
+	 	if ($(this).attr('isopen')!=1) {
+	 		$(this).attr('isopen','1');
+		 	$("#dir_name").css('width','auto');
+		 	$("#dir_name").css('border','1px solid #ccc');
+		 	return false;
+	 	}
+
+	 	//创建目录检测 {检测当前目录下是否含有同名目录，如果存在，不给予创建}
+	 	
 	 	var files_ctr = document.getElementById('files');
 		var tr_filename = files_ctr.getElementsByTagName('tr');
 		var value = document.getElementById('dir_name').value;
 		if (value=='') {
-			mizhu.toast('目录名不能为空', 3000);
+			if ($(this).attr('isopen')==1) {
+		 		$(this).attr('isopen','0');
+			 	$("#dir_name").css('width','0px');
+			 	$("#dir_name").css('border','0px');
+	 		}
 			return false;
 		}else{
 			for(var i = 0 ; i < tr_filename.length ; i++){
@@ -818,26 +846,90 @@ var rename_files = $('.rename');
 			 	}
 			}
 		}
-	 }
 
-	 //创建目录
-	 document.getElementById('search_button').onclick = function(){
-		  var mkdir_name = document.getElementById('dir_name').value;
+		//创建目录
+		var mkdir_name = document.getElementById('dir_name').value;
 			if (mkdir_name.indexOf('^')!=-1){
-				mizhu.toast('不允许出现“^"符号', 3000);
+				mizhu.toast('不允许出现“^"符号', 3000); //该符号为路径导航的分隔符
 				return false;
 			}
 		 $.ajax({
-						 type: "GET",
-						 url: "sharefun.php",
-						 data: "mkdir_name="+mkdir_name,
-						 success: function(data){
-							 if (data=='success') {
-								 window.onload();
-							 }else{
-								 mizhu.toast('创建失败', 3000);
-							 }
-							 }
-			});
+			 type: "GET",
+			 url: "sharefun.php",
+			 data: "mkdir_name="+mkdir_name,
+			 success: function(data){
+				 if (data=='success') {
+					 window.onload();
+				 }else{
+					 mizhu.toast('创建失败', 3000);
+				 }
+				 }
+		});
+	 }
+
+	 //2019-3-16 文件搜索功能
+	 var temp; //原文
+	 //
+	 //搜索文件
+	 document.getElementById('search_button').onclick = function(){
+	 	if ($(this).attr('isopen')!=1) {
+	 		$(this).attr('isopen','1');
+		 	$("#file_name").css('width','auto');
+		 	$("#file_name").css('border','1px solid #ccc');
+		 	return false;
+	 	}
+
+	 	//内容检测
+	 	var file_name = $("#file_name").val();
+	 	if (file_name=="") {
+	 		if ($(this).attr('isopen')==1) {
+		 		$(this).attr('isopen','0');
+			 	$("#file_name").css('width','0px');
+			 	$("#file_name").css('border','0px');
+	 		}
+	 		return false;
+	 	}
+
+	 	 $.ajax({
+			 type: "GET",
+			 url: "sharefun.php",
+			 data: "search_word="+file_name,
+			 success: function(data){
+				var obj = JSON.parse(data);
+				if (obj.length<1) {
+					mizhu.toast("无相关文件",3000);
+					$('#file_name').val("");
+				}else{
+					for(var i = 0 ; i < obj.length ; i++){
+						 var name = obj[i]['file_name'];
+						 var size = obj[i]['file_size'];
+						 var time = obj[i]['file_time'].substring(0,11);
+						 var id = obj[i]['id'];
+						 var qiniu_name = obj[i]['qiniu_name'];
+						 // temp = document.getElementById('files').innerHTML;  取消作用
+						 document.getElementById('files').innerHTML = "";//清空
+						 document.getElementById('files').innerHTML += `<tr isdir="3"><td><i class="iconfont icon-wenjian1"></i><em class="name" style="font-style: inherit!important;">${name}</em></td><td>${size}</td><td class="date">${time}</td><td><div class="method">
+						 <span title="重命名" file_id="${id}" class="am-badge am-badge-warning am-text-sm rename"><span class="am-icon-pencil"></span></span>
+						 <a data-am-modal="{target: '#move-file'}" title="移动" file_id="${id}" class="am-badge am-badge-success am-text-sm move"><span class="am-icon-arrows"></span></a>
+						 <span title="分享" file_id="${id}" class="am-badge am-badge-secondary am-text-sm share"><span class="am-icon-share-alt"></span></span>
+						 <span title="下载" file_id="${id}" class="am-badge am-badge-success am-text-sm download"><span class="am-icon-download"></span></span>
+						 <span title="删除" file="${id}" class="delete am-badge am-badge-danger am-text-sm"><span class="am-icon-trash"></span></span>
+						 <a title="预览" file_id="${id}" name="${qiniu_name}" qiniu_link="" class="am-badge am-badge-secondary am-text-sm watch" data-am-modal="{target: &quot;#my-popup&quot;}"><span class="am-icon-eye"><img style="position:absolute;z-index:-10;width:0px;" src="http://img.lanrentuku.com/img/allimg/1212/5-121204193Q9-50.gif"></span></a>
+						 </div></td></tr>`;
+					 }
+					//均需要获取完文件后执行
+					 getMulu();
+					 yulan();
+					 checkIcon();
+					 movefile();
+					 shareFun();
+					 deletedownloadFile();
+					 rename();
+					 showNav();
+					 $('#file_name').val("");
+				}
+			}
+		});
+
 	 }
 </script>
