@@ -180,4 +180,20 @@ if ($mkdir_name!='') {
 	}
 }
 
+//文件搜索
+$search_word = $_GET['search_word'];
+if ($search_word!='') {
+	$sql_get_file = "SELECT * FROM files WHERE file_name like '%".$search_word."%'";
+	$file_arr = array();
+
+	$end = mysql_query($sql_get_file);
+	while ($row = mysql_fetch_assoc($end)) {
+		$file_arr[] = $row;
+	}
+	$json = json_encode($file_arr);
+	exit($json);
+
+	echo mysql_error();
+}
+exit();
 ?>
