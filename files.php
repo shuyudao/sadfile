@@ -900,6 +900,7 @@ var rename_files = $('.rename');
 					mizhu.toast("无相关文件",3000);
 					$('#file_name').val("");
 				}else{
+					document.getElementById('files').innerHTML = "";//清空
 					for(var i = 0 ; i < obj.length ; i++){
 						 var name = obj[i]['file_name'];
 						 var size = obj[i]['file_size'];
@@ -907,7 +908,7 @@ var rename_files = $('.rename');
 						 var id = obj[i]['id'];
 						 var qiniu_name = obj[i]['qiniu_name'];
 						 // temp = document.getElementById('files').innerHTML;  取消作用
-						 document.getElementById('files').innerHTML = "";//清空
+						 
 						 document.getElementById('files').innerHTML += `<tr isdir="3"><td><i class="iconfont icon-wenjian1"></i><em class="name" style="font-style: inherit!important;">${name}</em></td><td>${size}</td><td class="date">${time}</td><td><div class="method">
 						 <span title="重命名" file_id="${id}" class="am-badge am-badge-warning am-text-sm rename"><span class="am-icon-pencil"></span></span>
 						 <a data-am-modal="{target: '#move-file'}" title="移动" file_id="${id}" class="am-badge am-badge-success am-text-sm move"><span class="am-icon-arrows"></span></a>
