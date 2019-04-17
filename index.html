@@ -1,0 +1,110 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=0">
+    <meta name="author" content="mengkun">
+    <meta name="generator" content="KodCloud">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-siteapp">
+    <meta name="description" content="SadFile极简文件管理系统">
+    <meta name="keywords" content="SadFile极简文件管理系统,术与道,SadFiles,极简文件管理系统">
+    <title>SadFile极简网盘系统</title>
+    <link rel="stylesheet" type="text/css" href="static/css/amazeui.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" media="screen" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="static/css/index.css">
+    <link rel="stylesheet" href="static/css/style.css">
+
+</head>
+<body>
+
+
+<header class="header" style="height: 1023px;background-image: url(https://i.loli.net/2018/12/28/5c25fdf50bb8d.jpg);">
+
+    <div class="welcome">
+        <h1 id="title">SadFile 个人网盘系统</h1>
+        <div class="line" style="background-color: #fff;"></div>
+        <p class="desc">SadFile 个人轻量级文件系统可以提供简单的文件存储管理服务</p>
+        <p class="desc">点击下方登录/注册 开始体验SadFile系统吧！</p>
+        <a href="login.html"><button type="button" class="am-btn am-btn-success">登录系统</button></a>
+    </div>
+     <footer id="footer" data-am-widget="footer"
+          class="am-footer am-footer-default"
+           data-am-footer="{  }">
+    <div class="am-footer-switch">
+    <span class="am-footer-ysp" data-rel="mobile"
+          data-am-modal="{target: '#am-switch-mode'}">
+          SadFile
+    </span>
+      <span class="am-footer-divider"> | </span>
+      <a id="godesktop" data-rel="desktop" class="am-footer-desktop" href="http://www.imwj.top">
+          术与道
+      </a>
+    </div>
+    <div class="am-footer-miscs ">
+
+          <p>版权所有者： <a href="http://www.imwj.top/" title="诺亚方舟"
+                                                target="_blank" class="">术与道</a></p>
+        <p>CopyRight©2018 All Rights Reserved.</p>
+    </div>
+  </footer>
+
+  <div id="am-footer-modal"
+       class="am-modal am-modal-no-btn am-switch-mode-m am-switch-mode-m-default">
+    <div class="am-modal-dialog">
+      <div class="am-modal-hd am-modal-footer-hd">
+        <a href="javascript:void(0)" data-dismiss="modal" class="am-close am-close-spin " data-am-modal-close>&times;</a>
+      </div>
+    
+    </div>
+  </div>
+</header>     <!-- header -->
+
+<!-- jq -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="static/js/vector.js"></script>
+
+<script>
+$(function(){
+
+    // 页面加载完毕后固定页头高度，防止在某些自动隐藏工具栏的移动浏览器上出现页面抖动现象
+    $(".header").height($(window).height());
+
+    // 初始化 传入dom id
+    var victor = new Victor("victor-container", "victor-output");
+    var theme = [
+            ["#002c4a", "#005584"],
+            ["#35ac03", "#3f4303"],
+            ["#ac0908", "#cd5726"],
+            ["#18bbff", "#00486b"]
+        ];
+    var color = theme[fRandomBy(0, 3)];
+    victor(color).set();
+
+
+
+});
+
+
+/*******************************
+ * 函数名：生成指定范围的随机数
+ * 输入：  (under)下限   (over)上限
+ * 输出： 所需要的数值
+ * *****************************/
+function fRandomBy(under, over) {
+   switch(arguments.length){
+     case 1: return parseInt(Math.random()*under+1);
+     case 2: return parseInt(Math.random()*(over-under+1) + under);
+     default: return 0;
+   }
+}
+</script>
+
+
+
+
+<style></body></style>
+
+
+
+</body></html>

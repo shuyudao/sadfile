@@ -1,0 +1,38 @@
+.welcome{
+	top: 30%;
+	font-size: 30px;
+
+}
+.welcome h1{
+	font-weight: 100!important;
+}
+.line{
+	width: 20%;
+	height: 1px;
+	background: #a7a7a7;
+	margin: 20px auto;
+
+}
+.desc{
+	font-size: 18px!important;
+	letter-spacing: 1.4px!important;
+}
+#footer{
+	position: absolute!important;
+	bottom: 0!important;
+	width: 100%;
+}
+@media screen and (max-width: 460px) {
+	h1{
+		font-size: 1em!important;
+	}
+	p{
+		font-size: 10px!important;
+	}
+	#footer{
+		height: 100px!important;
+	}
+	.welcome{
+		top: 36%;
+	}
+}
