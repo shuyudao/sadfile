@@ -524,8 +524,10 @@ function yulan() {
 	for(var  i = 0 ; i < eye_watch.length ; i++){
 		eye_watch[i].onclick = function () {
 			var name = this.getAttribute('name');
-			var file_extension = name.substr(-3,3);
-			if (file_extension!='jpg'&&file_extension!='png'&&file_extension!='gif'&&file_extension!='jpeg'&&file_extension!='mp4'&&file_extension!='avi'&&file_extension!='xlsx'&&file_extension!='docx'&&file_extension!='pptx'&&file_extension!='mp3')
+            var index1=name.lastIndexOf(".");
+            var index2=name.length;
+            var file_extension=name.substring(index1+1,index2);
+			if (file_extension!='jpg'&&file_extension!='png'&&file_extension!='gif'&&file_extension!='jpeg'&&file_extension!='mp4'&&file_extension!='avi'&&file_extension!='xlsx'&&file_extension!='docx'&&file_extension!='pptx'&&file_extension!='mp3'&&file_extension!='txt')
 			{
 				mizhu.toast('抱歉此格式不支持预览', 3000);
 				$("#close_yulan").modal('close');
