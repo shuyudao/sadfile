@@ -4,7 +4,14 @@ ini_set('date.timezone','Asia/Shanghai');
 include '../config.php';
 include '../function/function.php';
 islogin();
+$sql_get_all_polciy = "SELECT * FROM policy WHERE status = 1";
+$arr = array();
 
+$res = mysqli_query($conn,$sql_get_all_polciy);
+
+while ($row = mysqli_fetch_assoc($res)) {
+		$arr[] = $row;
+	}
 ?>
 
 <!DOCTYPE html>
@@ -28,6 +35,12 @@ islogin();
 		.in_w{
 			width: 100%;
 		}
+		.conti{
+			width: 100%;
+		}
+		#add_policy .am-u-sm-10,#edit_policy .am-u-sm-10{
+			margin-left: 40px;
+		}
 	</style>
 </head>
 <body>
@@ -46,6 +59,7 @@ islogin();
 
 		<div class="conti">
 			<div class="am-g">
+			<button style="margin-left: 24px;" id="changeme" type="button" class="am-btn am-btn-primary am-btn-xs">开启编辑</button>
 			<fieldset disabled>
 				<div class="am-u-md-6">
 					<div class="am-panel am-panel-default">
@@ -55,13 +69,14 @@ islogin();
 							    <h2 class="am-titlebar-title ">
 							        站点设置
 							    </h2>
+
 							</div>
 					  		<div class="in_w">
 					  			<form class="am-form am-form-horizontal">
 									 <div class="am-form-group">
 									    <div class="am-u-sm-10">
 									      <b>系统根域名</b><input type="text" id="site_url" placeholder="系统根域名" value="<?php echo $data[0]['site_url']?>">
-									    </div>
+									    </div>	
 									 </div>
 									 <div class="am-form-group">
 									    <div class="am-u-sm-10">
@@ -72,44 +87,192 @@ islogin();
 									    <div class="am-u-sm-10">
 									      <b>站点首页描述</b><input type="text" id="site_des" placeholder="首页描述" value="<?php echo $data[0]['site_des']?>">
 									    </div>
+
 									 </div>
+									<button style="margin-left: 15px;" id="save_site" type="button" class="am-btn am-btn-success">保存</button>
 								</form>
 					  		</div>
 
 							<div data-am-widget="titlebar" class="am-titlebar am-titlebar-default" >
 							    <h2 class="am-titlebar-title ">
-							        七牛配置项目
+							        上传策略
 							    </h2>
 							</div>
 
 							<div class="in_w">
 					  			<form class="am-form am-form-horizontal">
-									 <div class="am-form-group">
-									    <div class="am-u-sm-10">
-									      <b>七牛云域名<span style="font-weight: 100"></span></b><input type="text" id="qiniu_url" placeholder="七牛云域名 以http或https开头，勿要“/”结尾" value="<?php echo $data[0]['qiniu_url']?>">
-									    </div>
-									 </div>
-									 <div class="am-form-group">
-									    <div class="am-u-sm-10">
-									      <b>空间名</b><input type="text" id="qiniu_name" placeholder="七牛的存储空间名" value="<?php echo $data[0]['qiniu_name']?>">
-									    </div>
-									 </div>
-									 <div class="am-form-group">
-									    <div class="am-u-sm-10">
-									      <b>AccessKey</b><input type="text" id="qiniu_ak" placeholder="七牛AccessKey" value="<?php echo $data[0]['qiniu_AK']?>">
-									    </div>
-									 </div>
-									 <div class="am-form-group">
-									    <div class="am-u-sm-10">
-									      <b>SecretKey</b><input type="text" id="qiniu_sk" placeholder="七牛SecretKey" value="<?php echo $data[0]['qiniu_SK']?>">
-									    </div>
-									 </div>
-									 <!-- <div class="am-form-group">
-									    <div class="am-u-sm-10">
-									      <b>站点首页描述</b><input type="text" id="doc-ipt-3" placeholder="首页描述" value="你好！人类">
-									    </div>
-									 </div> -->
+					  				<br>
+					  				<div class="am-form-group">
+										<div class="am-u-sm-10">
+											<b>当前策略：</b>
+											<select data-am-selected id="select_policy">
+											<?php 
+												foreach($arr as $temp){
+													if($data[0]['policy_id']==$temp['id']){
+											 ?>
+											  <option value="<?php echo $temp['id']; ?>" selected><?php echo $temp['name']; ?></option>
+											 <?php 
+											 	}else{
+											?>
+												<option value="<?php echo $temp['id']; ?>"><?php echo $temp['name']; ?></option>
+											<?php 
+											 	}
+											  ?>
+											 <?php 
+											 }
+											  ?>
+											</select>
+											<button
+											  type="button"
+											  class="am-btn am-btn-primary"
+											  data-am-modal="{target: '#edit_policy', closeViaDimmer: 0, width: 400, height: 500}">
+											  编辑当前策略
+											</button>
+										</div>
+
+					  				</div>
+					  				<div class="am-form-group">
+									<div class="am-u-sm-10">
+									<b>添加策略：</b>
+										<button
+										  type="button"
+										  class="am-btn am-btn-primary"
+										  data-am-modal="{target: '#add_policy', closeViaDimmer: 0, width: 400, height: 500}">
+										  添加新的策略
+										</button>
+										
+									</div>
+								</div>
 								</form>
+								
+								<div class="am-modal am-modal-no-btn" tabindex="-1" id="add_policy">
+								  <div class="am-modal-dialog">
+								    <div class="am-modal-hd">添加上传策略
+								      <a href="javascript: void(0)" class="am-close am-close-spin" data-am-modal-close>&times;</a>
+								    </div>
+								    <div class="am-modal-bd">
+								     	<form class="am-form am-form-horizontal" role="form">
+											<div class="am-form-group">
+												<br>
+												<div class="am-u-sm-10">
+													
+													策略类型：
+													<select data-am-selected id="policy_type">
+													  <option value="qiniu" selected>七牛云</option>
+													  <option value="remote">远程/本地</option>
+													</select>
+												</div>
+												<br>
+							  				</div>
+
+										  	<div class="am-form-group">
+										  		<div class="am-u-sm-10">
+										    		<input type="text" id="policy_name" class="am-form-field am-input-sm" placeholder="策略名（自定义）">
+										    	</div>
+										  	</div>
+											
+										  	<div class="am-form-group">
+										    	<div class="am-u-sm-10">
+										    		<input type="text" id="policy_ak" class="am-form-field am-input-sm" placeholder="ak">
+										    	</div>
+										  	</div>
+
+										  	<div class="am-form-group">
+										    	<div class="am-u-sm-10">
+										    		<input type="text" id="policy_sk" class="am-form-field am-input-sm" placeholder="sk">
+										    	</div>
+										  	</div>
+
+										  	<div class="am-form-group">
+										    	<div class="am-u-sm-10">
+										    		<input type="text" id="policy_bucket" class="am-form-field am-input-sm" placeholder="bucket">
+										    	</div>
+										  	</div>
+										  	<div class="am-form-group">
+										    	<div class="am-u-sm-10">
+										    		<input type="text" id="policy_domain" class="am-form-field am-input-sm" placeholder="domain">
+										    		<br>
+										    	</div>
+
+										    	<button type="button" id="add_policy_btn" class="am-btn am-btn-default">添加策略</button>
+										  	</div>
+											<p>当选择 <b>远程/本地 </b>策略，sk、bucket两项请留空</p>
+										</form>
+								    </div>
+								  </div>
+								</div>
+
+								<div class="am-modal am-modal-no-btn" tabindex="-1" id="edit_policy">
+								  <div class="am-modal-dialog">
+								    <div class="am-modal-hd">编辑上传策略
+								      <a href="javascript: void(0)" class="am-close am-close-spin" data-am-modal-close>&times;</a>
+								    </div>
+								    <div class="am-modal-bd">
+								     	<form class="am-form am-form-horizontal" role="form">
+											<div class="am-form-group">
+												<br>
+												<div class="am-u-sm-10">
+													
+													策略类型：
+													<select data-am-selected id="e_policy_type">
+													<?php 
+														if ($data[0]['type']=='qiniu') {
+													 ?>
+													  <option value="qiniu" selected>七牛云</option>
+													  <option value="remote">远程/本地</option>
+													<?php 
+														}else if ($data[0]['type']=='remote') {
+													?>
+														<option value="qiniu">七牛云</option>
+													    <option value="remote" selected>远程/本地</option>
+													<?php
+														}
+
+													 ?>
+													</select>
+												</div>
+												<br>
+							  				</div>
+
+										  	<div class="am-form-group">
+										  		<input type="hidden" id="policy_id" value="<?php echo $data[0]['policy_id'] ?>">
+										  		<div class="am-u-sm-10">
+										    		<input type="text" id="e_policy_name" class="am-form-field am-input-sm" placeholder="策略名（自定义）" value="<?php echo $data[0]['name'] ?>">
+										    	</div>
+										  	</div>
+											
+										  	<div class="am-form-group">
+										    	<div class="am-u-sm-10">
+										    		<input type="text" id="e_policy_ak" value="<?php echo $data[0]['ak'] ?>" class="am-form-field am-input-sm" placeholder="ak">
+										    	</div>
+										  	</div>
+
+										  	<div class="am-form-group">
+										    	<div class="am-u-sm-10">
+										    		<input type="text" id="e_policy_sk" value="<?php echo $data[0]['sk'] ?>" class="am-form-field am-input-sm" placeholder="sk">
+										    	</div>
+										  	</div>
+
+										  	<div class="am-form-group">
+										    	<div class="am-u-sm-10">
+										    		<input type="text"  id="e_policy_bucket" value="<?php echo $data[0]['bucket'] ?>" class="am-form-field am-input-sm" placeholder="bucket">
+										    	</div>
+										  	</div>
+										  	<div class="am-form-group">
+										    	<div class="am-u-sm-10">
+										    		<input type="text" id="e_policy_domain" value="<?php echo $data[0]['domain'] ?>" class="am-form-field am-input-sm" placeholder="domain">
+										    		<br>
+										    	</div>
+
+										    	<button type="button" id="save_policy_edit" class="am-btn am-btn-default">保存编辑</button>
+										    	<button type="button" id="del_policy" class="am-btn am-btn-danger">删除策略</button>
+										  	</div>
+											<p>当选择 <b>远程/本地 </b>策略，sk、bucket两项请留空</p>
+										</form>
+								    </div>
+								  </div>
+								</div>
+								
 					  		</div>
 
 					  	</div>
@@ -153,7 +316,10 @@ islogin();
 										    });
 										  });
 										</script>
+										<br>
+										<button type="button" id="save_get_pwd" class="am-btn am-btn-success">保存</button>
 									</div>
+									
 								</form>
 							</div>
 
@@ -169,17 +335,8 @@ islogin();
 											<b>最大上传：</b><input type="text" id="update_max_size" placeholder="最大上传：" value="<?php echo $data[0]['max_upload']?>">
 										</div>
 								 </div>
-								 </form>
-							</div>
 
-							<div data-am-widget="titlebar" class="am-titlebar am-titlebar-default" >
-									<h2 class="am-titlebar-title ">
-											图廊设置
-									</h2>
-							</div>
-								<div class="in_w">
-									<form class="am-form am-form-horizontal">
-									 <div class="am-form-group">
+								 <div class="am-form-group">
 											<div class="am-u-sm-10">
 												<b>图廊状态</b><input type="text" id="tulang_state" placeholder="1：开启 0：关闭" value="<?php echo $data[0]['tulang_state']?>">
 											</div>
@@ -205,19 +362,18 @@ islogin();
 											 <div id="xuanze" style="width:100px;height:32px;text-align:center;line-height:32px;color:#fff;cursor:pointer" data-am-modal="{target: '#move-file'}" title="tulang" class="am-badge-success am-text-sm move">选择目录</div>
 										 </div>
 								   </div>
-									 </form>
-								</div>
+								   <button type="button" id="save_other" class="am-btn am-btn-success">保存</button>
+								</form>
 
 						</div>
 
 						</div>
 					 </div>
 				</div>
-		</fieldset>
-				<div>
+			</fieldset>
+				<div style="position: relative;top: -20px;">
 					<div style="margin-left: 26px;">
-							<button id="changeme" style="display: inline-block;" type="button" class="am-btn am-btn-primary">修改所有</button>
-							<button id="getin" style="display: inline-block;" type="button" class="am-btn am-btn-secondary">提交修改</button>
+								
 					</div>
 				</div>
 			</div>
@@ -275,48 +431,167 @@ islogin();
 			fieldset.removeAttribute('disabled');
 			changeme.disabled = 'disabled';
 		}
-
-		getin.onclick = function(){
-			// 获取数据
+		$("#save_site").click(function(){
 			var site_name = document.getElementById('site_name').value;
 			var site_url = document.getElementById('site_url').value;
 			var site_des = document.getElementById('site_des').value;
-			var qiniu_url = document.getElementById('qiniu_url').value;
-			var qiniu_name = document.getElementById('qiniu_name').value;
-			var qiniu_ak = document.getElementById('qiniu_ak').value;
-			var qiniu_sk = document.getElementById('qiniu_sk').value;
-			var share_pwd = document.getElementById('share_pwd').value;
-			var update_max_size = document.getElementById('update_max_size').value;
-			var tulang_state = document.getElementById('tulang_state').value;
-			var tulang_open = document.getElementById('tulang_open').value;
-			var tulang_dir = document.getElementById('tulang_dir').getAttribute('key');
-			if (site_name==''||site_url==''||qiniu_ak=='') {
-				alert("请至少保证必填项完整");
-			}else{
-				//2019-3-16  新增 规范用户对七牛云url的规范填写
-				if (qiniu_url.indexOf('http://')==-1&&qiniu_url.indexOf('https://')==-1) {
-					mizhu.toast('七牛云域名请使用http://或https://', 3000);
-					return false;
-				}else if(qiniu_url.charAt(qiniu_url.length-1)=="/"){
-					mizhu.toast('七牛云域名请不要以‘/’结尾', 3000);
-					return false;
-				}
-
-				$.ajax({
-		           type: "POST",
-		           url: "../function/sharefun.php",
-		           data: "site_name="+site_name+"&tulang_state="+tulang_state+"&tulang_open="+tulang_open+"&tulang_dir="+tulang_dir+"&update_max_size="+update_max_size+"&site_url="+site_url+"&site_des="+site_des+"&qiniu_url="+qiniu_url+"&qiniu_name="+qiniu_name+"&qiniu_ak="+qiniu_ak+"&qiniu_sk="+qiniu_sk+"&share_pwd="+share_pwd,
-		           success: function(data){
-		            	if (data=='修改成功') {
-		            		window.location.reload();
-		            	}else{
-		            		mizhu.toast('修改失败', 3000);
-		            	}
-		            }
-		        });
+			var spstr = site_url.split("");
+			if (spstr[spstr.length-1]=='/') {
+				spstr[spstr.length-1]='';
+				site_url = spstr.join('');
 			}
 
-		}
+			if(site_url.indexOf("http")<0){
+				site_url = "http://"+site_url;
+			}
+
+			$.ajax({
+	            type: "POST",
+	            url: "../function/setting.php",
+	            data: {'site_name':site_name,'site_url':site_url,'site_des':site_des,'method':'site_setting'},
+	            success: function(data){
+	            	if (data=='success') {
+	            		window.location.reload();
+	            	}else{
+	            		mizhu.toast('修改失败', 3000);
+	            	}
+	            }
+		    });
+		})
+
+		$("#add_policy_btn").click(function(){
+			var policy_name = $("#policy_name").val();
+			var policy_ak = $("#policy_ak").val();
+			var policy_sk = $("#policy_sk").val();
+			var policy_bucket = $("#policy_bucket").val();
+			var policy_domain = $("#policy_domain").val();
+			var policy_type = $("#policy_type").val();
+
+			var spstr = policy_domain.split("");
+			
+			if (spstr[spstr.length-1]=='/') {
+				spstr[spstr.length-1]='';
+				policy_domain = spstr.join('');
+			}
+			if(policy_domain.indexOf("http://")<0&&policy_domain.indexOf("https://")<0){
+				policy_domain = "http://"+policy_domain;
+			}
+
+			$.ajax({
+	            type: "POST",
+	            url: "../function/setting.php",
+	            data: {'policy_name':policy_name,'policy_ak':policy_ak,'policy_sk':policy_sk,'policy_bucket':policy_bucket,'policy_domain':policy_domain,'policy_type':policy_type,'method':'add_policy'},
+	            success: function(data){
+	            	if (data=='success') {
+	            		window.location.reload();
+	            	}else{
+	            		mizhu.toast('添加失败', 3000);
+	            	}
+	            }
+		    });
+		})
+
+		$("#save_policy_edit").click(function(){
+			var policy_name = $("#e_policy_name").val();
+			var policy_ak = $("#e_policy_ak").val();
+			var policy_sk = $("#e_policy_sk").val();
+			var policy_bucket = $("#e_policy_bucket").val();
+			var policy_domain = $("#e_policy_domain").val();
+			var policy_type = $("#e_policy_type").val();
+			var policy_id = $("#policy_id").val();
+
+			var spstr = policy_domain.split("");
+			
+			if (spstr[spstr.length-1]=='/') {
+				spstr[spstr.length-1]='';
+				policy_domain = spstr.join('');
+			}
+			if(policy_domain.indexOf("http://")<0&&policy_domain.indexOf("https://")<0){
+				policy_domain = "http://"+policy_domain;
+			}
+
+			$.ajax({
+	            type: "POST",
+	            url: "../function/setting.php",
+	            data: {'policy_name':policy_name,'policy_ak':policy_ak,'policy_sk':policy_sk,'policy_bucket':policy_bucket,'policy_domain':policy_domain,'policy_type':policy_type,'method':'edit_policy','policy_id':policy_id},
+	            success: function(data){
+	            	if (data=='success') {
+	            		mizhu.toast('保存成功', 3000);
+	            	}else{
+	            		mizhu.toast('修改失败', 3000);
+	            	}
+	            }
+		    });
+		})
+
+		$("#del_policy").click(function(){
+			var policy_id = $("#policy_id").val();
+			$.ajax({
+	            type: "POST",
+	            url: "../function/setting.php",
+	            data: {'method':'del_policy','policy_id':policy_id},
+	            success: function(data){
+	            	if (data=='success') {
+	            		window.location.reload();
+	            	}else{
+	            		mizhu.toast('删除失败', 3000);
+	            	}
+	            }
+		    });
+		})
+		$("#select_policy").change(function(e){
+			var id = e.target.value;
+			console.log(id);
+			$.ajax({
+	            type: "POST",
+	            url: "../function/setting.php",
+	            data: {'method':'use_policy','policy_id':id},
+	            success: function(data){
+	            	if (data=='success') {
+	            		window.location.reload();
+	            	}else{
+	            		mizhu.toast('删除失败', 3000);
+	            	}
+	            }
+		    });
+		})
+
+		$("#save_get_pwd").click(function(){
+			var pwd = $("#share_pwd").val();
+			$.ajax({
+	            type: "POST",
+	            url: "../function/setting.php",
+	            data: {'method':'edit_share_pwd','pwd':pwd},
+	            success: function(data){
+	            	if (data=='success') {
+	            		window.location.reload();
+	            	}else{
+	            		mizhu.toast('修改失败', 3000);
+	            	}
+	            }
+		    });
+		})
+
+		$("#save_other").click(function(){
+			var tulang_state = $("#tulang_state").val();
+			var tulang_open = $("#tulang_open").val();
+			var tulang_dir = $("#tulang_dir").attr('key');
+			var update_max_size = $('#update_max_size').val();
+			$.ajax({
+	            type: "POST",
+	            url: "../function/setting.php",
+	            data: {'method':'save_other','tulang_state':tulang_state,
+	            'tulang_open':tulang_open,'tulang_dir':tulang_dir,'update_max_size':update_max_size},
+	            success: function(data){
+	            	if (data=='success') {
+	            		window.location.reload();
+	            	}else{
+	            		mizhu.toast('修改失败', 3000);
+	            	}
+	            }
+		    });
+		})
+
 		try{
 			var isshare = <?php echo $data[0]['isshare'];?>0;
 		}catch(err){

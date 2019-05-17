@@ -1,10 +1,16 @@
 <?php
 include 'conn.php';
 #基本表数据
-$sql_select = "SELECT * FROM base;";
+$sql_select = "SELECT * from policy INNER JOIN base ON policy.id = base.policy_id";
 $sql = mysqli_query($conn,$sql_select);
 $data = array();
 $data[]  = mysqli_fetch_assoc($sql);
+if ($data[0]==NULL) {
+  $sql_select = "SELECT * from base";
+  $sql = mysqli_query($conn,$sql_select);
+  $data = array();
+  $data[]  = mysqli_fetch_assoc($sql);
+}
 
 #登录判断
 function islogin() {
@@ -12,6 +18,7 @@ function islogin() {
   $cookie = $_COOKIE['islogin'];
   if ($mysql_login!=$cookie) {
   	header('Location:../'.$data[0]['site_url'].'index.html');
+    // echo $cookie."----".$mysql_login; 
   }
 }
 function getBrowser(){

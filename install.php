@@ -4,7 +4,8 @@
 
 	1.2 /2019-1-5
 	1.3.1 /2019-3-16
-	1.3.5 / 2019-4-17
+	1.3.5 /2019-4-17
+	1.3.5 /2019-5-18
  -->
 <meta charset="utf-8">
 <?php
@@ -43,10 +44,6 @@ $dbname="'.$dbname.'";
 				site_name varchar(50) default 'SadFile',	#站点名称
 				site_des varchar(255),	#站点描述
 				site_img varchar(100),	#站点背景图
-				qiniu_url varchar(50),  #七牛域名
-				qiniu_AK varchar(100),	#七牛accessKey公钥
-				qiniu_SK varchar(100),	#七牛secretKey私钥
-				qiniu_name varchar(20), #七牛空间名称
 				share_pwd varchar(5) default '0000',	#万能提取密码
 				isshare int,			#分享功能是否开启 1为开启 其他关闭
 				clearsharepwd int,		#是否修改所有的为公开 1为全部公开 其他关闭
@@ -58,6 +55,7 @@ $dbname="'.$dbname.'";
 				tulang_state varchar(5) default '1',
 				tulang_open varchar(5) default '0',
 				tulang_dir varchar(60) default '0',
+				policy_id int(11) default 1,
 				login_ip varchar(36));";	#登录IP
 
 				#文件表
@@ -69,7 +67,7 @@ $dbname="'.$dbname.'";
 				file_time datetime, #文件的创建时间
 				partent_dir_key varchar(100), #所属父级目录key 用来保证唯一性
 				qiniu_name varchar(100), #云端文件名 （于七牛云存储的文件名）
-				md5key varchar(50) #文件的MD5key值，用于校验是否为非法下载  只有当id与MD5key一一对应才给予下载（用于分享的游客下载）
+				for_policy_id int(11) #
 				)ENGINE=InnoDB DEFAULT CHARSET=utf8;";
 
 				#分享表
@@ -90,9 +88,21 @@ $dbname="'.$dbname.'";
 				partent_dir_key varchar(60) #父级目录key
 				);";
 
+				#policy
+				$sql_create_policy = "CREATE table policy (
+				id int(11) primary key auto_increment unique NOT NULL,
+				name varchar(50),
+				ak varchar(100),
+				sk varchar(100),
+				domain varchar(100),
+				status int(11),
+				bucket varchar(50),
+				type varchar(50)
+				);";
+
 				$sql_cascade = "ALTER table share add constraint File_ids foreign key (file_id) references files (id) ON UPDATE CASCADE ON DELETE CASCADE;";
-				if(!mysqli_query($conn,$sql_create_base)||!mysqli_query($conn,$sql_create_share)||!mysqli_query($conn,$sql_create_files)||!mysqli_query($conn,$sql_create_dir)){
-					echo mysqli_error();
+				if(!mysqli_query($conn,$sql_create_base)||!mysqli_query($conn,$sql_create_share)||!mysqli_query($conn,$sql_create_files)||!mysqli_query($conn,$sql_create_dir)||!mysqli_query($conn,$sql_create_policy)){
+					echo mysqli_error($conn);
 					echo "<h1 align='center'>创建表失败</h1>";
 				}else{
 					fwrite($wirte_config,$config_txt);//写入配置文件

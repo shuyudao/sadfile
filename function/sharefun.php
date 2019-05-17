@@ -2,8 +2,8 @@
 error_reporting(0);
 include '../config.php';
 include 'function.php';
-require '../qiniu/autoload.php'; #引入七牛
-use Qiniu\Auth;  #鉴权类
+include 'FileManger.php';
+use Qiniu\Auth; #鉴权类
 islogin();
 #修改提取密码
 if ($_POST['key']!='') {
@@ -152,21 +152,34 @@ if ($_GET['get_list']!='') {
 }
 
 if ($_GET['qiniu_name_qm']!='') {
-
-	#七牛云资源下载签名
-	function qiniu_img($file_name,$ak,$sk,$url){
-	    $accessKey = $ak;
-	    $secretKey = $sk;
-	    // 构建Auth对象
-	    $auth = new Auth($accessKey, $secretKey);
-	    // 私有空间中的外链 http://<domain>/<file_key>
-	    $baseUrl = $url.'/'.$file_name;
-	    // 对链接进行签名
-	    $signedUrl = $auth->privateDownloadUrl($baseUrl);
-	    return $signedUrl;
+	$filename = $_GET["qiniu_name_qm"];
+	#预览
+	function preview($file_name,$data){
+		$type = $data['type'];
+		if ($type=='qiniu') {
+			$accessKey = $data['ak'];
+		    $secretKey = $data['sk'];
+		    // 构建Auth对象
+		    $auth = new Auth($accessKey, $secretKey);
+		    // 私有空间中的外链 http://<domain>/<file_key>
+		    $baseUrl = $data['domain'].'/'.$file_name;
+		    // 对链接进行签名
+		    $signedUrl = $auth->privateDownloadUrl($baseUrl);
+		    return $signedUrl;
+		}else if($type=='remote'){
+			$auto = new FileManger($file_name,$data);
+			return $auto->preview();
+		}
 	}
 
-	echo qiniu_img($_GET['qiniu_name_qm'],$data[0]['qiniu_AK'],$data[0]['qiniu_SK'],$data[0]['qiniu_url']);
+	//不同策略之间自由切换
+	$sql_get_file_policy_id = "SELECT for_policy_id FROM files WHERE qiniu_name = '$filename'";
+	$type = mysqli_fetch_assoc(mysqli_query($conn,$sql_get_file_policy_id));
+	$policy_id = $type['for_policy_id'];
+	$sql_get_policy = "SELECT * FROM policy WHERE id = '$policy_id'";
+	$data = mysqli_fetch_assoc(mysqli_query($conn,$sql_get_policy));
+
+	echo preview($filename,$data);
 }
 
 //创建目录

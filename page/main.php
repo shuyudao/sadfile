@@ -9,8 +9,8 @@ include '../config.php';
 islogin();
 
 // var_dump($data);
-if($data[0]['qiniu_url']==''){
-	echo "<script>alert('请前往系统设置配置七牛云设置')</script>";
+if($data[0]['policy_id']==''){
+	echo "<script>alert('请前往系统设置配置上传策略')</script>";
 }
 
 function getAllFileSize(){
@@ -127,7 +127,7 @@ function getShareDownloadCounts(){
 							<ul class="am-list am-list-static am-list-border">
 								<li><b>文件存储大小：</b><?php echo trans_byte(getAllFileSize()); ?></li>
 								<li><b>外链总下载数：</b><?php echo getShareDownloadCounts(); ?><b>&nbsp;&nbsp;&nbsp;&nbsp;分享文件数：</b><?php echo getShareCounts(); ?><b>&nbsp;&nbsp;&nbsp;&nbsp;总文件数：</b><?php echo getFileCounts(); ?></li>
-								<li>空位待置</li>
+								<li><b>版本：1.3.6</b></li>
 								<li>空位待置</li>
 							</ul>
 						</div>
