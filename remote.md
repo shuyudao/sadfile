@@ -24,15 +24,19 @@
 
 **nignx配置**
 本地
+
 `location ^~ /remote/upload {
 	deny all;
 }`
+
 远程
+
 `location ^~ /upload {
 	deny all;
 }`
 
 **Apache配置**
+
 `<Directory />
 Options None
 AllowOverride None
