@@ -4,6 +4,32 @@ ini_set('date.timezone','Asia/Shanghai');
 include '../config.php';
 include '../function/function.php';
 islogin(); #判断是否登录
+
+//上传域名检测 19-6-17
+$policy_id = $data[0]['policy_id'];
+$sql_get_all_polciy = "SELECT * FROM policy WHERE id = $policy_id";
+$arr = array();
+$res = mysqli_query($conn,$sql_get_all_polciy);
+while ($row = mysqli_fetch_assoc($res)) {
+	$arr[] = $row;
+}
+var_dump($arr);
+function get_http_code($url) {  
+    $curl = curl_init();  
+    curl_setopt($curl, CURLOPT_URL, $url); 
+    curl_setopt($curl, CURLOPT_HEADER, 1); //获取Header  
+    curl_setopt($curl, CURLOPT_NOBODY, true); 
+    curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1); 
+    $data = curl_exec($curl); 
+    $return = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+    curl_close($curl);
+    return $return;  
+}
+
+$gttpCode = get_http_code($arr[0]['domain']);
+if($gttpCode!="200"&&$gttpCode!=401){
+	echo "<script>alert('上传domainURL出现异常，请检查')</script>";
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
