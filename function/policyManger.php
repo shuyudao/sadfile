@@ -2,9 +2,8 @@
 /**
  * Policy上传策略管理
  */
-include '../config.php';
-include 'function.php';
-
+include_once '../config.php';
+include_once 'function.php';
 class PolicyManger
 {
 	
@@ -13,20 +12,20 @@ class PolicyManger
 		# code...
 	}
 
-	public static function getPolicydataByfileId($file_id,$conn){
+	public static function getPolicydataByfileId($file_id,$DB){
 
 		$sql_file = "SELECT * FROM files WHERE id = ".$file_id;
-		$end = mysqli_fetch_assoc(mysqli_query($conn,$sql_file));
+		$end = $DB->query($sql_file);
 		$for_policy_id = $end['for_policy_id'];
 		$sql_get_policy = "SELECT * FROM policy WHERE id = '$for_policy_id'";
-		$policy_data = mysqli_fetch_assoc(mysqli_query($conn,$sql_get_policy));
+		$policy_data = $DB->query($sql_get_policy);
 
 		return $policy_data;
 	}
 
-	public static function getPolicydataBypolicyId($policy_id,$conn){
+	public static function getPolicydataBypolicyId($policy_id,$DB){
 		$sql_get_policy = "SELECT * FROM policy WHERE id = '$policy_id'";
-		$policy_data = mysqli_fetch_assoc(mysqli_query($conn,$sql_get_policy));
+		$policy_data = $DB->query($sql_get_policy);
 
 		return $policy_data;
 	}

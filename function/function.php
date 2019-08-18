@@ -1,41 +1,21 @@
 <?php
-include 'conn.php';
+include 'DB.php';
+if (!session_id()) session_start();
 #基本表数据
 $sql_select = "SELECT * from policy INNER JOIN base ON policy.id = base.policy_id";
-$sql = mysqli_query($conn,$sql_select);
-$data = array();
-$data[]  = mysqli_fetch_assoc($sql);
-if ($data[0]==NULL) {
+$data = $DB->query($sql_select);
+if ($data==NULL) {
   $sql_select = "SELECT * from base";
-  $sql = mysqli_query($conn,$sql_select);
-  $data = array();
-  $data[]  = mysqli_fetch_assoc($sql);
+  $data=$DB->query($sql_select);
 }
-
 #登录判断
 function islogin() {
-  $mysql_login = md5($GLOBALS['data'][0]['user_name'].$GLOBALS['data'][0]['user_pwd']);
-  $cookie = $_COOKIE['islogin'];
-  if ($mysql_login!=$cookie) {
-  	header('Location:../'.$data[0]['site_url'].'index.html');
-    // echo $cookie."----".$mysql_login; 
+  global $data;
+  $user = $_SESSION['user'];
+  if ($user==null) {
+  	header('Location:'.$data[0]['site_url'].'/login.html');
   }
 }
-function getBrowser(){
-  $agent=$_SERVER["HTTP_USER_AGENT"];
-  if(strpos($agent,'MSIE')!==false || strpos($agent,'rv:11.0')) //ie11判断
-   return "ie";
-  else if(strpos($agent,'Firefox')!==false)
-   return "firefox";
-  else if(strpos($agent,'Chrome')!==false)
-   return "chrome";
-  else if(strpos($agent,'Opera')!==false)
-   return 'opera';
-  else if((strpos($agent,'Chrome')==false)&&strpos($agent,'Safari')!==false)
-   return 'safari';
-  else
-   return 'unknown';
- }
 
 
 function trans_byte($byte)
@@ -72,4 +52,43 @@ function trans_byte($byte)
 
     }
 }
+
+function getIp(){
+
+    $ip='未知IP';
+
+    if(!empty($_SERVER['HTTP_CLIENT_IP'])){
+
+        return is_ip($_SERVER['HTTP_CLIENT_IP'])?$_SERVER['HTTP_CLIENT_IP']:$ip;
+
+    }elseif(!empty($_SERVER['HTTP_X_FORWARDED_FOR'])){
+
+        return is_ip($_SERVER['HTTP_X_FORWARDED_FOR'])?$_SERVER['HTTP_X_FORWARDED_FOR']:$ip;
+
+    }else{
+
+        return is_ip($_SERVER['REMOTE_ADDR'])?$_SERVER['REMOTE_ADDR']:$ip;
+
+    }
+
+}
+
+function is_ip($str){
+
+    $ip=explode('.',$str);
+
+    for($i=0;$i<count($ip);$i++){ 
+
+        if($ip[$i]>255){ 
+
+            return false; 
+
+        } 
+
+    } 
+
+    return preg_match('/^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$/',$str); 
+
+}
+
 ?>

@@ -6,6 +6,7 @@
 	1.3.1 /2019-3-16
 	1.3.5 /2019-4-17
 	1.3.5 /2019-5-18
+	2.0.0 /2019-8-16
  -->
 <meta charset="utf-8">
 <?php
@@ -72,7 +73,7 @@ $dbname="'.$dbname.'";
 
 				#分享表
 				$sql_create_share = "CREATE table share (
-				share_key varchar(50) primary key unique NOT NULL,  #分享识别的KEY
+				share_key varchar(50) primary key NOT NULL,  #分享识别的KEY
 				file_id int(11),
 				share_time varchar(20) NOT NULL,	#文件分享时间
 				download_cont int NOT NULL default 0,#文件的下载次数
@@ -110,7 +111,7 @@ $dbname="'.$dbname.'";
 					mysqli_query($conn,$sql_cascade);
 					$sql_insert = "INSERT into base (site_url,user_name,user_pwd,user_nico) VALUES ('$siteurl','$admin_user','$admin_pwd','$admin_nico');";
 					mysqli_query($conn,$sql_insert);
-					echo "<h1 align='center'>安装成功</h1><p align='center'><a href='index.html'>点击返回首页<a></p>";
+					echo "<h1 align='center'>安装成功</h1><p align='center'><a href='./login.html'>点击返回首页<a></p>";
 
 				}
 

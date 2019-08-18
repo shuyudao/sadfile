@@ -45,6 +45,7 @@ class FileManger
 		    {
 		       $pattern = '1234567890abcdefghijklmnopqrstuvwxyz
 		                   ABCDEFGHIJKLOMNOPQRSTUVWXYZ';
+                $key = "";
 		        for($i=0;$i<$length;$i++)
 		        {
 		            $key .= $pattern{mt_rand(0,35)};    //生成php随机数
@@ -69,11 +70,26 @@ class FileManger
 	}
 
 	public function preview(){
-		$aes = new Aes($this->data['ak']);
-		$str = "preview::".$this->filename;
-		$result = $aes->encrypt($str);
-		$token = md5($this->data['ak'].date("Y-m-d H")).":".$result;
-		return $this->data['domain'].'/'."index.php?token=".base64_encode($token);
+        $type = $this->data['type'];
+        if ($type=='qiniu') {
+            $accessKey = $this->data['ak'];
+            $secretKey = $this->data['sk'];
+            // 构建Auth对象
+            $auth = new Auth($accessKey, $secretKey);
+            // 私有空间中的外链 http://<domain>/<file_key>
+            $baseUrl = $this->data['domain'].'/'.$this->filename;
+            // 对链接进行签名
+            $signedUrl = $auth->privateDownloadUrl($baseUrl);
+            return $signedUrl;
+        }else if($type=='remote'){
+            $aes = new Aes($this->data['ak']);
+            $str = "preview::".$this->filename;
+            $result = $aes->encrypt($str);
+            $token = md5($this->data['ak'].date("Y-m-d H")).":".$result;
+            return $this->data['domain'].'/'."index.php?token=".base64_encode($token);
+        }
+
+
 	}
 
 	public function download($downloadFilename){

@@ -2,7 +2,7 @@
 /**
  * Created by PhpStorm.
  * User: shuyudao
- * Date: 2019.5.9
+ * Date: 2019.5.9 / 2018.8.14
  * Time: 18:18
  *
  * 文件远程/本地 上传策略
@@ -71,16 +71,43 @@ class FileManger
 			$type = strtolower($type);
 			if ($type=='jpg'||$type=='png'||$type=='gif'||$type=='jpeg'||$type=='bmp') {
 				header("Content-Type: image/jpeg;text/html; charset=utf-8");
-			}else if($type=='txt'){
-				header("Content-Type: text/plain;text/html; charset=gbk");
-			}else if($type=='mp4'){
+			}else if($type=='txt'||$type=='php'||$type=='java'||$type=='css'||$type=='js'||$type=='html'||$type=='py'||$type=='sql'){
+			    $charset = $this->detect_encoding($this->file_path);//识别文件编码
+			    header("Content-Type: text/plain;text/html; charset=".$charset);
+			}else if($type=='mp4'||$type=='flv'){
 				header("Content-Type: audio/mp4;text/html; charset=uft-8");
-			}else if ($type=='mp3') {
+			}else if ($type=='mp3'||$type=='m4a'||$type=='flac'||$type=='aac'||$type=='wav') {
 				header("Content-Type: audio/mp3;text/html; charset=uft-8");
 			}else if($type=='pdf'){
 				header("Content-Type: application/pdf;text/html; charset=uft-8");
+			}else if($type=='doc'||$type=='docx'||$type=='xls'||$type=='xlsx'||$type=='ppt'||$type=='pptx'){
+				$contentType = 'application/msword';
+				switch ($type) {
+					case 'doc':
+						$contentType = 'application/msword';
+						break;
+					case 'docx':
+						$contentType = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+						break;
+					case 'xls':
+						$contentType = 'application/vnd.ms-excel';
+						break;
+					case 'xlsx':
+						$contentType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+						break;
+					case 'ppt':
+						$contentType = 'application/vnd.ms-powerpoint';
+						break;
+					case 'pptx':
+						$contentType = 'application/vnd.openxmlformats-officedocument.presentationml.presentation';
+						break;
+					default:
+						break;
+				}
+				header($contentType."; charset=uft-8");
 			}else{
 				echo "不支持预览";
+				die;
 			}
 			$file = fopen ( $this->file_path, "rb" );
 			echo fread ( $file, filesize ( $this->file_path ) ); 
@@ -89,5 +116,18 @@ class FileManger
 		}
 
 	}
+
+    //检测文件编码
+	private function detect_encoding($file) {
+        $list = array('GBK', 'UTF-8', 'UTF-16LE', 'UTF-16BE', 'ISO-8859-1');
+        $str = file_get_contents($file);
+        foreach ($list as $item) {
+            $tmp = mb_convert_encoding($str, $item, $item);
+            if (md5($tmp) == md5($str)) {
+                return $item;
+            }
+        }
+        return 'UTF-8';//识别不出，默认UTF-8处理
+    }
 }
 ?>

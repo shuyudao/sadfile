@@ -1,78 +1,76 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-	<meta charset="UTF-8">
-	<title>SadFile - 登录</title>
-	<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-	<!-- 框架样式 -->
-	<link rel="stylesheet" type="text/css" href="static/css/amazeui.css">
+<html lang="ch">
+ <head> 
+  <meta charset="utf-8" /> 
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" /> 
+  <meta name="renderer" content="webkit" /> 
+  <meta name="viewport" content="width=device-width, initial-scale=1.0,maximum-scale=1.0, user-scalable=no" /> 
+  <meta http-equiv="Cache-Control" content="no-siteapp" /> 
+  <meta name="theme-color" content="#3F51B5" /> 
+  <title>登录 - SadFile</title> 
+  <link rel="stylesheet" href="http://cdnjs.loli.net/ajax/libs/mdui/0.4.3/css/mdui.min.css">
+  <link href="https://cdn.bootcss.com/viewerjs/1.3.6/viewer.min.css" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="https://cdn.bootcss.com/dplayer/1.25.0/DPlayer.min.css">
+  <link rel="stylesheet" type="text/css" href="static/css/prism.css">
+  <link rel="stylesheet" type="text/css" href="static/css/wx-audio.css">
+  <script type="text/javascript" src="http://at.alicdn.com/t/font_1334636_vc764p8yiqm.js"></script>
+  <style type="text/css">
+    @media screen and (max-width: 500px){
+      #main{
+        width: 90%!important;
+      }
+      h1 {
+        font-size: 36px!important;
+      }
+    }
+  </style>
 </head>
-<style>
-	*{
-		margin: 0;
-		padding: 0;
-	}
-	html,body{
-		height: 100%;
-		position: relative;
-	}
-	#login{
-		width: 500px;
-		margin: 220px auto;
-	}
-	#login input{
-		margin-bottom: 10px;
-		opacity: 1;
-	}
-	h1{
-		font-size: 46px;
-		color: #fff;
-		text-align: center;
-		font-weight: 200;
-	}
-	#footer{
-		color: #fff;
-		width: 100%;
-		text-align: center;
-	}
-	@media screen and (max-width: 600px){
-		#login{
-			width: 90%;
-			margin-top: 180px;
-		}
-	}
-	@media screen and (max-width: 400px){
-		h1{
-			font-size: 30px;
-		}
-		#login{
-			margin-top: 120px;
-		}
-		#footer{
-			font-size: 12px;
-			margin-top: -20px;
-		}
-	}
-</style>
 <body>
-	<div style="width: 100%;height: 100%;overflow: hidden;background-image: url(https://i.loli.net/2018/12/28/5c25fdf50bb8d.jpg);background-size: cover;">
-		<div id="login">
-			<div class="am-g">
-			  <div class="am-u-md-8 am-u-sm-centered">
-			    <form class="am-form" method="post" action="login.php">
-			      <fieldset class="am-form-set">
-			      	<h1>SadFile System</h1>
-			        <input type="text" name="user" placeholder="输入用户名">
-			        <input type="password" name="pwd" placeholder="输入密码">
-			      </fieldset>
-			      <button style="background-color: #0e90d2;color: #fff" type="submit" class="am-btn am-btn-primary am-btn-block">立即登录</button>
-			    </form>
-			  </div>
-			</div>
-		</div>
-		<div id="footer">
-			<p>SadFile CopyRight©2018 术与道 All Rights Reserved.</p>
-		</div>
-	</div>
+    <div class="mdui-appbar mdui-theme-primary-indigo mdui-shadow-0">
+      <div class="mdui-toolbar mdui-color-theme ">
+        <a href="javascript:;" class="mdui-btn mdui-btn-icon"><i class="mdui-icon material-icons">menu</i></a>
+        <a href="javascript:;" class="mdui-typo-headline">SadFile</a>
+        <a href="javascript:;" class="mdui-typo-title">登录</a>
+      </div>
+    </div>
+    <div>
+      <h1 align="center" style="margin-top: 80px;font-weight: 300;font-size: 42px;">SadFile Login</h1>
+      <div id="main" style="width: 400px;height: auto;margin: 0 auto">
+        <div class="mdui-textfield">
+          <i class="mdui-icon material-icons">account_circle</i>
+          <input class="mdui-textfield-input" id="username" type="text" placeholder="用户名"/>
+        </div>
+        <div class="mdui-textfield">
+          <i class="mdui-icon material-icons">lock</i>
+          <input class="mdui-textfield-input" id="password" type="password" placeholder="密码"/>
+        </div>
+        <button id="login" class="mdui-btn mdui-color-indigo mdui-ripple mdui-center" style="margin-top: 30px;">登录</button>
+      </div>
+    </div>
 </body>
 </html>
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+
+<script type="text/javascript">
+  
+  $("#login").click(function () {
+    var username = $("#username").val();
+    var password = $("#password").val();
+
+    $.ajax({
+      url:"./function/api.php",
+      method:"post",
+      data:{"username":username,"password":password},
+      success:function(data){
+        var data = JSON.parse(data);
+        if (data['status']==200) {
+          window.location.href="/";
+        }else{
+          $("#username").val("");
+          $("#password").val("");
+        }
+      }
+    })
+
+  })
+
+</script>

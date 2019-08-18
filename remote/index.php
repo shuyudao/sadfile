@@ -1,4 +1,6 @@
 <?php
+header('Access-Control-Allow-Origin: *');
+error_reporting(0);
 /**
  * Created by PhpStorm.
  * User: shuyudao
@@ -48,7 +50,7 @@
 
                 } else {
                     $data['code'] = 0;
-                    $data['msg'] = 'error code:' . $_FILES['file']['error'];
+                    $data['msg'] = 'file_error_code:' . $_FILES['file']['error'];
                     $data['file_path'] = '';
                     return $data;
                 }

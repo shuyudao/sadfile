@@ -4,13 +4,8 @@
 	<meta charset="UTF-8">
 	<title>SadFile - 程序安装</title>
 	<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-	<!-- icon样式 -->
-	<link rel="stylesheet" type="text/css" href="static/css/iconfont.css">
 	<!-- 框架样式 -->
-	<link rel="stylesheet" type="text/css" href="static/css/amazeui.css">
-
-	<!-- 主样式 -->
-	<link rel="stylesheet" href="static/css/base.css">
+	<link rel="stylesheet" type="text/css" href="http://cdn.clouddeep.cn/amazeui/1.0.1/css/amazeui.basic.min.css">
 	<style>
 		*{
 			margin:0;
@@ -41,7 +36,7 @@
 <body>
 	<div id="install">
 		<h1>SadFile 程序安装</h1>
-		<p>v1.3.5</p>
+		<p>v2.0</p>
 		<div id="danger" style="display: none;" class="am-alert am-alert-danger" data-am-alert>
 		  <button type="button" class="am-close">&times;</button>
 		  <p>请确保每一项都填写完整</p>
@@ -59,16 +54,26 @@
 		        <input name="admin_pwd" type="text" placeholder="用户密码">
 		        <input name="admin_nico" type="text" placeholder="用户昵称">
 		        <br>
-		        <input name="siteurl" type="text" placeholder="站点域名 带http以 / 结束">
+		        <input name="siteurl" type="text" placeholder="站点域名 带http:// 不要以“/”结尾">
 		      </fieldset>
 		      <button id="start_install" type="submit" class="am-btn am-btn-primary am-btn-block">开始安装</button>
 		    </form>
 		  </div>
 		</div>
 	</div>
-	 <p align="center">SadFile CopyRight©2018 术与道 All Rights Reserved.</p>
+	 <p align="center">SadFile CopyRight©2018-2019 <a href="http://www.shuyudao.top/">术与道</a> All Rights Reserved.</p>
 </body>
 <script type="text/javascript" src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
-<script type="text/javascript" src="static/js/install.js"></script>
-<script type="text/javascript" src="static/js/amazeui.js"></script>
+<script type="text/javascript">
+	
+	$('#start_install').click(function () {
+	for(var i = 0 ; i < $('input').length ; i++){
+		if($('input')[i].value==''){
+			alert("请确保每一项都填写完整");
+			return false;
+		}	
+	}
+	})
+
+</script>
 </html>
