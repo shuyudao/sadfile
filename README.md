@@ -33,6 +33,8 @@
 
 [更多更新日志](https://github.com/shuyudao/sadfile/wiki/%E6%9B%B4%E6%96%B0%E6%97%A5%E5%BF%97)
 
+[关于2.0](http://www.shuyudao.top/index.php/archives/726/)
+
 ------
 
 
@@ -75,3 +77,5 @@
 ![image.png](https://i.loli.net/2019/08/18/V6iYz94j1deKFH8.png)
 
 ![image.png](https://i.loli.net/2019/08/18/RxVAto5MiLk7jdy.png)
+
+
