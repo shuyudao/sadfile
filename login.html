@@ -55,7 +55,7 @@
   $("#login").click(function () {
     var username = $("#username").val();
     var password = $("#password").val();
-
+    $(this).val("登录中");
     $.ajax({
       url:"./function/api.php",
       method:"post",
@@ -65,6 +65,7 @@
         if (data['status']==200) {
           window.location.href="/";
         }else{
+          $("#login").val("登录");
           $("#username").val("");
           $("#password").val("");
         }
