@@ -364,7 +364,7 @@ $(document).off("click",".file-item[folder]").on("click",".file-item[folder]",fu
 
 //面包屑导航的文件加载
 $(document).off("click","#bread span").on("click","#bread span",function(){
-  if ($(this).attr("id")==undefined) {
+  if ($(this).attr("id")==undefined||$("#loading").html()!=null) { //修复
     return false;
   }
   $("#file-list").attr("partent_dir_key",$(this).attr("id"));
